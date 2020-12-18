@@ -40,11 +40,12 @@ const refs = {
 const timer = {
   start() {
     const targetDate = new Date('Jun 1, 2021');
+    updateClockface(0);
 
     setInterval(() => {
       const currentTime = Date.now();
-      const time = targetDate - currentTime;
-      updateClockface(time);
+      const deltaTime = targetDate - currentTime;
+      updateClockface(deltaTime);
     }, 1000);
   },
 };
