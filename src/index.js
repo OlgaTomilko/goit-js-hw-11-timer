@@ -25,46 +25,50 @@ import './styles.css';
  */
 //const secs = Math.floor((time % (1000 * 60)) / 1000);
 
-// new CountdownTimer({
-//   selector: '#timer-1',
-//   targetDate: new Date('Jul 17, 2019'),
-// });
+class CountdownTimer {
+  constructor({ selector, targetDate }) {
+    this.timer = document.querySelector(selector);
+    this.days = document.querySelector('[data-value="days"]');
+    this.hours = document.querySelector('[data-value="hours"]');
+    this.mins = document.querySelector('[data-value="mins"]');
+    this.secs = document.querySelector('[data-value="secs"]');
+    this.targetDate = targetDate;
+  }
 
-const refs = {
-  days: document.querySelector('[data-value="days"]'),
-  hours: document.querySelector('[data-value="hours"]'),
-  mins: document.querySelector('[data-value="mins"]'),
-  secs: document.querySelector('[data-value="secs"]'),
-};
-
-const timer = {
   start() {
-    const targetDate = new Date('Jun 1, 2021');
-    updateClockface(0);
+    this.days.textContent = '00';
+    this.hours.textContent = '00';
+    this.mins.textContent = '00';
+    this.secs.textContent = '00';
 
     setInterval(() => {
       const currentTime = Date.now();
-      const deltaTime = targetDate - currentTime;
-      updateClockface(deltaTime);
+      const deltaTime = this.targetDate - currentTime;
+
+      const days = String(
+        Math.floor(deltaTime / (1000 * 60 * 60 * 24)),
+      ).padStart(2, '0');
+      const hours = String(
+        Math.floor((deltaTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+      ).padStart(2, '0');
+      const mins = String(
+        Math.floor((deltaTime % (1000 * 60 * 60)) / (1000 * 60)),
+      ).padStart(2, '0');
+      const secs = String(
+        Math.floor((deltaTime % (1000 * 60)) / 1000),
+      ).padStart(2, '0');
+
+      this.days.textContent = `${days}`;
+      this.hours.textContent = `${hours}`;
+      this.mins.textContent = `${mins}`;
+      this.secs.textContent = `${secs}`;
     }, 1000);
-  },
-};
+  }
+}
+
+const timer = new CountdownTimer({
+  selector: '#timer-1',
+  targetDate: new Date('Jun 1, 2021'),
+});
 
 timer.start();
-
-function updateClockface(time) {
-  const days = pad(Math.floor(time / (1000 * 60 * 60 * 24)));
-  const hours = pad(
-    Math.floor((time % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-  );
-  const mins = pad(Math.floor((time % (1000 * 60 * 60)) / (1000 * 60)));
-  const secs = pad(Math.floor((time % (1000 * 60)) / 1000));
-  refs.days.textContent = `${days}`;
-  refs.hours.textContent = `${hours}`;
-  refs.mins.textContent = `${mins}`;
-  refs.secs.textContent = `${secs}`;
-}
-
-function pad(value) {
-  return String(value).padStart(2, '0');
-}
